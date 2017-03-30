@@ -9,7 +9,7 @@
     <meta name="description" content="">
     <meta name="author" content="">
 
-    <title>Bare - Start Bootstrap Template</title>
+    <title>Module Feedback</title>
 
     <!-- Bootstrap Core CSS -->
     <link href="css/bootstrap.min.css" rel="stylesheet">
@@ -88,11 +88,29 @@
 							exit();
 						}
 						print " ".$row[0].''.$row[1];
+
+						$sql ="SELECT CAM_SMO.MOD_CODE,MOD_NAME,INS_MOD.PRS_CODE,PRS_FNM1,PRS_SURN
+ 					 FROM CAM_SMO JOIN INS_MOD ON (CAM_SMO.MOD_CODE=INS_MOD.MOD_CODE)
+ 					 							JOIN INS_PRS ON (INS_MOD.PRS_CODE=INS_PRS.PRS_CODE)
+ 					 WHERE SPR_CODE=? AND AYR_CODE='2016/7' AND PSL_CODE='TR1'";
+
+ 					 $stmt = $con->prepare($sql)
+ 						 or die ($con->error);
+ 					 $stmt->bind_param('s',$_REQUEST['u'])
+ 						 or die('Bind error');
+ 					 $stmt->execute()
+ 						 or die('execute error');
+ 					 $cur = $stmt->get_result();
+
+ 					 while ($row = $cur->fetch_row()){
+ 						 print "Please answer questions about $row[0]";
+ 					 }
 						?>
         </div>
 
 
         <div class="jumbotron">
+
 					<div class="container">
 </div>
         </div>
