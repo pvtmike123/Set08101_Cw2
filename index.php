@@ -63,7 +63,7 @@
         <h1 class="projTitle">Module Feedback</h1>
 
 
-        <div class="alert alert-success alert-dismissible" role="alert">
+        <div class="alert alert-success alert-dismissible" style="width:100%;" role="alert">
             <button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span></button>
             <strong>Welcome!</strong><?php
 						if (!array_key_exists('u',$_REQUEST)) {
@@ -71,7 +71,7 @@
 							exit();
 						}
 
-						$con = new mysqli('localhost','scott','tiger','gisq');
+						$con = new mysqli('localhost','40170242','pXRVjb65','40170242');
 						if ($con->connect_error){
 							die('Connection failure');
 						}
@@ -91,18 +91,19 @@
 						?>
         </div>
 
-
-					<h3>Current Modules</h3>
 					<?php
-					$con = new mysqli('localhost','scott','tiger','gisq');
+					$con = new mysqli('localhost','40170242','pXRVjb65','40170242');
 					if ($con->connect_error){
 						die('Connection failure');
 					}
+
 
 					$sql ="SELECT CAM_SMO.MOD_CODE,MOD_NAME,INS_MOD.PRS_CODE,PRS_FNM1,PRS_SURN
 				 FROM CAM_SMO JOIN INS_MOD ON (CAM_SMO.MOD_CODE=INS_MOD.MOD_CODE)
 											JOIN INS_PRS ON (INS_MOD.PRS_CODE=INS_PRS.PRS_CODE)
 				 WHERE SPR_CODE=? AND AYR_CODE='2016/7' AND PSL_CODE='TR1' LIMIT 3";
+
+
 
 				 $stmt = $con->prepare($sql)
 					 or die ($con->error);
@@ -111,19 +112,37 @@
 				 $stmt->execute()
 					 or die('execute error');
 				 $cur = $stmt->get_result();
+         print "<form action=php/feedback.php>";
 
-				 while ($row = $cur->fetch_row()){
-					?>
-					<div class="row">
-    		<div class="col-md-4">
-					 <div class="jumbotron"><?php   print "$row[0]"; ?></div>
-				</div>
+
+
+ // output data of each row
+
+    while ($row = $cur->fetch_assoc()){
+      $sql1 = "SELECT * FROM INS_QUE ";
+      $stmt1 = $con->prepare($sql1);
+      $stmt1->execute();
+      $result1 = $stmt1->get_result();
+      if ($result1->num_rows > 0) {
+      print "<h2>Module ".$row['MOD_NAME']."</h2>
+      <div class=jumbotron>
+      <table class=table>";
+      while($row1 = $result1->fetch_assoc()) {
+      echo "<tr><td>".$row1["QUE_CODE"]."</td><td>".$row1["QUE_TEXT"]."</td> <td>
+           <input type='radio' name='".$row['MOD_CODE'] ."_Q" .$row1['QUE_CODE']."' value='5'>DA
+           <input type='radio' name='".$row['MOD_CODE'] ."_Q".$row1['QUE_CODE']."' value='4'>MA
+           <input type='radio' name='".$row['MOD_CODE'] ."_Q".$row1['QUE_CODE']."' value='3'>N
+           <input type='radio' name='".$row['MOD_CODE'] ."_Q".$row1['QUE_CODE']."' value='2'>MD
+           <input type='radio' name='".$row['MOD_CODE'] ."_Q".$row1['QUE_CODE']."' value='1'>SD</td></tr>";
+ }
+ echo "</table></div>";
+}
+}
+            print "<input type=hidden name=u value=$_REQUEST[u]>";
+            print "<input type=submit class=btn btn-warning btn-lg active>";
+            print "</form>";
+           ?>
   			</div>
-
-				<?php  } ?>
-
-</div>
-        </div>
 
 
     <!-- jQuery Version 1.11.1 -->
