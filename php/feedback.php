@@ -38,5 +38,5 @@
                print "<li>done and insert, $_REQUEST[u],$mc,$qn,$res";
               }
               print json_encode($_REQUEST);
-              header('Location: http://40170242.set08101.napier.ac.uk/cw2/');
+              header('Location: http://40170242.set08101.napier.ac.uk/cw2/pages/thank_you.php');
 						?>
